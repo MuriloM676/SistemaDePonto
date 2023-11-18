@@ -1,0 +1,69 @@
+package SistemaPonto;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.HashMap;
+import java.util.Map;
+
+public class SistemaDePonto extends JFrame implements ActionListener {
+    private final JLabel statusLabel;
+    private final JButton pontoButton;
+    private final JTextField matriculaField;
+    private final Map<String, String> usuarios;
+
+    public SistemaDePonto() {
+        setTitle("Sistema de Ponto");
+        setSize(450, 200);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+
+        statusLabel = new JLabel("Bem-vindo! Informe sua matrícula e registre o ponto.");
+        pontoButton = new JButton("Registrar");
+        matriculaField = new JTextField(8);
+        usuarios = new HashMap<>();
+
+        // Adicionando alguns usuários fictícios (matrícula -> nome)
+        usuarios.put("123", "João");
+        usuarios.put("456", "Maria");
+        usuarios.put("789", "Pedro");
+        usuarios.put("9999", "TESTE");
+
+        pontoButton.addActionListener(this);
+
+        JPanel panel = new JPanel();
+        panel.setLayout(new GridLayout(4, 1));
+        panel.add(statusLabel);
+        panel.add(matriculaField);
+        panel.add(pontoButton);
+
+        add(panel);
+        setVisible(true);
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == pontoButton) {
+            registrarPonto();
+        }
+    }
+
+    private void registrarPonto() {
+        String matricula = matriculaField.getText();
+        if (!matricula.isEmpty() && usuarios.containsKey(matricula)) {
+            String nomeUsuario = usuarios.get(matricula);
+            statusLabel.setText("Ponto registrado para " + nomeUsuario + " (Matrícula: " + matricula + ") às " + obterHoraAtual());
+        } else {
+            statusLabel.setText("Matrícula inválida. Por favor, insira uma matrícula válida.");
+        }
+    }
+
+    private String obterHoraAtual() {
+        return java.time.LocalTime.now().toString();
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(SistemaDePonto::new);
+    }
+}
